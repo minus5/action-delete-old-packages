@@ -8,7 +8,6 @@ number of major package versions to keep after deletion, **default: 10**
 ## 'dryRun'
 Dry run **is not deleting** packages just logs what should be, **default: false**
 - deleted 
-- kept
 
 ## Build and deploy
 Build is done using [@vercel/ncc](https://github.com/vercel/ncc) to compile code and modules into one file used for distribution and to avoid committing `node_modules` folder.  
@@ -47,14 +46,14 @@ on:
 jobs:
   delete_package_versions:
     runs-on: ubuntu-latest
-	name: Deletes old packages in repository
+    name: Deletes old packages in repository
     steps:
     - id: package-cleanup
       uses: minus5/action-delete-old-packages@v1.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         keepCnt: 5
-		dryRun: false
+        dryRun: false
 ```
 
 ## References
@@ -69,3 +68,6 @@ https://github.com/vercel/ncc
 
 To run actions locally for testing  
 https://github.com/nektos/act
+
+Action originally created by  
+https://github.com/djelusic/delete-packages-action
