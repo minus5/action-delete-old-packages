@@ -1,0 +1,24 @@
+name: 'action-delete-old-packages'
+description: 'Deletes old package versions'
+inputs:
+  owner:
+    description: 'Repo owner, defaults to owner of the repo running the action'
+    required: false
+  repo:
+    description: 'Repo name, defaults to repo running the action'
+    required: false
+  keepCnt:
+    description: 'Number of package versions to keep for each major version'
+    require: false
+    default: 10
+  dryRun:
+    description: 'Dry run to test action without deleting any package'
+    require: false
+    default: false
+  token:
+    description: 'GitHub token'
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
