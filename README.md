@@ -32,12 +32,12 @@ git push --follow-tags
 ```
 
 ## Example using action
-Add config to root in your repository:
+Add workflow config to root in your repository:
 ```
 .github/workflows/package-cleanup.yml
 ```
 
-Example of package-cleanup.yml:
+Example of package-cleanup.yml workflow:
 ```yml
 on:
   registry_package:
@@ -56,6 +56,23 @@ jobs:
         dryRun: false
 ```
 
+## Testing locally using act
+To test locally using [act](https://github.com/nektos/act) here are few steps  
+go to project where workflow is located e.g.
+```
+$ cd ~/work/web-js
+```
+run act to list steps e.g.
+```
+$ act workflow_dispatch -l
+```
+finally run act to see how your workflow is working (example for workflow above)
+```
+$ act workflow_dispatch -s GITHUB_TOKEN=[your github token]
+```
+for more check [ACT tool](https://github.com/nektos/act) ...
+
+
 ## References
 How to create JS action:  
 https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action
@@ -66,7 +83,7 @@ https://github.com/actions/toolkit
 Tool for compiling Node.js into single file:  
 https://github.com/vercel/ncc
 
-To run actions locally for testing  
+ACT tool to run actions locally for testing  
 https://github.com/nektos/act
 
 Action originally created by  
