@@ -49,12 +49,56 @@ jobs:
     name: Deletes old packages in repository
     steps:
     - id: package-cleanup
-      uses: minus5/action-delete-old-packages@v1.0
+      uses: minus5/action-delete-old-packages@v1.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         keepCnt: 5
         dryRun: false
 ```
+
+### Using action from private repository
+There are few more steps in action configuration to enable usage of private action.
+This is kind of hack because GitHub doesn't support using actions from other private repository than
+repository action is run on. For this hack we will use [actions/checkout](https://github.com/actions/checkout) Here is example of how to do it.
+
+```yml
+on:
+  registry_package:
+  workflow_dispatch:
+
+jobs:
+  delete_package_versions:
+    runs-on: ubuntu-latest
+    name: Deletes old packages in repository
+    steps:
+      # checkout repository where workflow is run on
+      - id: checkout-repository
+        uses: actions/checkout@v2
+      # checkout action from private repository that we want run in workflow
+      # action is placed in current checked out repository to overcome github restriction running actions from other private repositories
+      # Note: token used for action checkout from private repo defers from one used by action itself because has access only to 
+      - id: checkout-action
+        uses: actions/checkout@v2
+        with:
+          repository: minus5/action-delete-old-packages
+          ref: v1.3
+          token: ${{ secrets.GITHUB_PAT }}
+          path: .github/actions/action-delete-old-packages
+      # for action steps debug display current folder tree
+      #- id: show-tree
+      #  run: pwd;find . -type d -print 2>/dev/null|awk '!/\.$/ {for (i=1;i<NF-1;i++){printf("│   ")}print "├── "$NF}'  FS='/'
+      # finally run action
+      - id: package-cleanup
+        # here we change reference to checked out action to run it
+        uses: ./.github/actions/action-delete-old-packages
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          keepCnt: 5
+          dryRun: false
+
+```
+Please note that **secrets.GITHUB_PAT** is GitHub user personal access token with enough rights to access action private repo.
+Other interesting issue is that this hack doesn't work with **act local testing** this is something to investigate.
 
 ## Testing locally using act
 To test locally using [act](https://github.com/nektos/act) here are few steps  
@@ -82,6 +126,12 @@ https://github.com/actions/toolkit
 
 Tool for compiling Node.js into single file:  
 https://github.com/vercel/ncc
+
+Using private action on private repo  
+https://github.com/actions/checkout  
+other possible options (not tested)  
+https://github.com/bagbyte/use-private-action  
+https://github.com/nick-invision/private-action-loader
 
 ACT tool to run actions locally for testing  
 https://github.com/nektos/act
