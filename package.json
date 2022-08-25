@@ -1,6 +1,6 @@
 {
   "name": "action-delete-old-packages",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "GitHub action for deleting old package versions in a repository",
   "main": "dist/index.js",
   "scripts": {

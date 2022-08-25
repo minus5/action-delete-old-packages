@@ -53,7 +53,7 @@ query getPackageVersions($owner: String!, $repo: String!, $package: String!, $af
 }`;
 
 const deletePackageVersion = `
-mutation deletePackageVersion($packageVersionId: String!) {
+mutation deletePackageVersion($packageVersionId: ID!) {
     deletePackageVersion(input: {packageVersionId: $packageVersionId}) {
         success
     }
