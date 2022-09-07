@@ -18,6 +18,7 @@ async function findAll(
   cursor = null
 ) {
   while (true) {
+    info("a new page grab");
     let rsp = await graphql(token, query, {
       ...params,
       after: cursor,
@@ -34,9 +35,13 @@ async function findAll(
 }
 
 async function findAllPackageVersions(token, package, owner, repo) {
+  info(
+    "Complete package versions data JSON: " + JSON.stringify(package.versions)
+  );
   let versions = package.versions.edges.map((edge) => edge.node);
   const pageInfo = package.versions.pageInfo;
   if (pageInfo.hasNextPage) {
+    info("starts finding packages by pages");
     await findAll(
       token,
       queries.packageVersions,
@@ -79,15 +84,11 @@ async function deletePackageVersions(
   const toDelete = [];
   for (const key in majorVersions) {
     let vs = majorVersions[key];
-    info("All versions: ");
-    vs.map((v) => info("v: " + v.version));
     vs = vs.reverse();
     if (vs.length <= keepCnt) {
       continue;
     }
-    info("vs.length before slice: " + vs.length + " keepCnt: " + keepCnt);
     vs = vs.slice(0, vs.length - keepCnt);
-    info("vs.length after slice: " + vs.length);
     vs.forEach((v) => {
       toDelete.push(v);
     });
@@ -123,9 +124,7 @@ module.exports = async function (inputs) {
     },
     (rsp) => rsp.repository.packages
   );
-  info("All packages list:");
   packages = packages.filter((p) => {
-    info(p.name);
     return !p.name.startsWith("deleted_");
   });
 
