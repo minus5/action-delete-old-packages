@@ -111,7 +111,7 @@ module.exports = async function (inputs) {
   );
   info("All packages list:");
   packages = packages.filter((p) => {
-    info(p.name);
+    info("p: " + p.name);
     return !p.name.startsWith("deleted_");
   });
 
