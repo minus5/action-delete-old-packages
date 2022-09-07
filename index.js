@@ -12,11 +12,11 @@ async function run() {
       token: getInput("token"),
     };
     info("Input values:");
-    Object.values(inputs).map((v) => info(v));
+    Object.entries(inputs).map((v) => info(v[0] + ": " + v[1]));
     const deleted = await deleteVersions(inputs);
     if (inputs.dryRun) {
       info(
-        "Dry run is NOT deleting packages, list below is what would be deleted"
+        "Dry run is NOT deleting packages, list below is what would be deleted, dryRun: " + Number(inputs.dryRun)
       );
     }
     deleted.forEach((package) => {
