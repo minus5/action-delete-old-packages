@@ -43,6 +43,10 @@ async function findAllPackageVersions(token, package, owner, repo) {
       pageInfo.endCursor
     );
   }
+  info(
+    "Log all found versions in findAllPackageVersions: " +
+      JSON.stringify(versions)
+  );
   return versions;
 }
 
@@ -69,7 +73,7 @@ async function deletePackageVersions(
   for (const key in majorVersions) {
     let vs = majorVersions[key];
     info("All versions: ");
-    vs.map((v) => info("v: " + v));
+    vs.map((v) => info("v: " + v.version));
     vs = vs.reverse();
     if (vs.length <= keepCnt) {
       continue;
