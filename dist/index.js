@@ -75,12 +75,15 @@ async function deletePackageVersions(
   const toDelete = [];
   for (const key in majorVersions) {
     let vs = majorVersions[key];
+    info("All versions: ");
     vs.map((v) => info("v: " + v));
     vs = vs.reverse();
     if (vs.length <= keepCnt) {
       continue;
     }
+    info("vs.length before slice: " + vs.length + " keepCnt: " + keepCnt);
     vs = vs.slice(0, vs.length - keepCnt);
+    info("vs.length after slice: " + vs.length);
     vs.forEach((v) => {
       toDelete.push(v);
     });
