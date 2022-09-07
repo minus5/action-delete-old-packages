@@ -75,6 +75,7 @@ async function deletePackageVersions(
   const toDelete = [];
   for (const key in majorVersions) {
     let vs = majorVersions[key];
+    vs.map((v) => info("v: " + v));
     vs = vs.reverse();
     if (vs.length <= keepCnt) {
       continue;
@@ -89,7 +90,6 @@ async function deletePackageVersions(
   for (let i = 0; i < toDelete.length; i++) {
     // on dryRun just add as deleted
     if (dryRun) {
-      info("deletePackageVersion received dryRun as true");
       deleted.push(toDelete[i]);
       continue;
     }
@@ -118,7 +118,7 @@ module.exports = async function (inputs) {
   );
   info("All packages list:");
   packages = packages.filter((p) => {
-    info("p: " + p.name);
+    info(p.name);
     return !p.name.startsWith("deleted_");
   });
 
@@ -177,20 +177,14 @@ async function run() {
     const inputs = {
       owner: getInput("owner") || context.repo.owner,
       repo: getInput("repo") || context.repo.repo,
-      keepCnt: getInput("keepCnt"),
+      keepCnt: Number(getInput("keepCnt")), // getInput converts ALL values to string!
       dryRun: getInput("dryRun"),
       token: getInput("token"),
     };
     info("Input values:");
     Object.entries(inputs).map((v) => info(v[0] + ": " + v[1]));
-    if (inputs.dryRun === "false") inputs.dryRun = false;
+    if (inputs.dryRun === "false") inputs.dryRun = false; // getInput converts ALL values to string!
     if (inputs.dryRun) {
-      info(
-        "How do I receive dryRun? Type: " +
-          typeof inputs.dryRun +
-          " Value: " +
-          inputs.dryRun
-      );
       info(
         "Dry run is NOT deleting packages, list below is what would be deleted, dryRun: " +
           Number(inputs.dryRun)

@@ -68,11 +68,15 @@ async function deletePackageVersions(
   const toDelete = [];
   for (const key in majorVersions) {
     let vs = majorVersions[key];
+    info("All versions: ");
+    vs.map((v) => info("v: " + v));
     vs = vs.reverse();
     if (vs.length <= keepCnt) {
       continue;
     }
+    info("vs.length before slice: " + vs.length + " keepCnt: " + keepCnt);
     vs = vs.slice(0, vs.length - keepCnt);
+    info("vs.length after slice: " + vs.length);
     vs.forEach((v) => {
       toDelete.push(v);
     });
@@ -82,7 +86,6 @@ async function deletePackageVersions(
   for (let i = 0; i < toDelete.length; i++) {
     // on dryRun just add as deleted
     if (dryRun) {
-      info("deletePackageVersion received dryRun as true");
       deleted.push(toDelete[i]);
       continue;
     }
@@ -111,7 +114,7 @@ module.exports = async function (inputs) {
   );
   info("All packages list:");
   packages = packages.filter((p) => {
-    info("p: " + p.name);
+    info(p.name);
     return !p.name.startsWith("deleted_");
   });
 
